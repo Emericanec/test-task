@@ -103,6 +103,9 @@
     "phar-io/version": {
         "version": "3.1.0"
     },
+    "php": {
+        "version": "8.1"
+    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
@@ -218,6 +221,15 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "symfony-bundles/json-request-bundle": {
+        "version": "0.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "0.0",
+            "ref": ""
+        }
     },
     "symfony/asset": {
         "version": "5.4.x-dev"
@@ -418,6 +430,15 @@
     "symfony/polyfill-php81": {
         "version": "v1.23.0"
     },
+    "symfony/polyfill-uuid": {
+        "version": "0.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "0.0",
+            "ref": ""
+        }
+    },
     "symfony/process": {
         "version": "5.4.x-dev"
     },
@@ -500,6 +521,15 @@
             "config/packages/twig.yaml",
             "templates/base.html.twig"
         ]
+    },
+    "symfony/uid": {
+        "version": "0.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "0.0",
+            "ref": ""
+        }
     },
     "symfony/validator": {
         "version": "4.3",
