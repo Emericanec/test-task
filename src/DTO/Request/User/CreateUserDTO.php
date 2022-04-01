@@ -4,25 +4,41 @@ declare(strict_types=1);
 
 namespace App\DTO\Request\User;
 
-use \App\DTO\Request\RequestDTOInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class UserDTO implements RequestDTOInterface
+class CreateUserDTO extends AbstractUserDTO
 {
-    /** @var null|string  */
+    /**
+     * @Assert\NotBlank
+     * @var string|null
+     */
     private $firstName;
 
-    /** @var null|string  */
+    /**
+     * @Assert\NotBlank
+     * @var string|null
+     */
     private $lastName;
 
-    /** @var null|string  */
+    /**
+     * @Assert\NotBlank
+     * @Assert\Email
+     * @var string|null
+     */
     private $email;
 
-    /** @var null|int  */
+    /**
+     * @Assert\Type(type="integer")
+     * @var int|null
+     */
     private $parentId;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, ValidatorInterface $validator)
     {
+        $this->validator = $validator;
+
         $data = json_decode($request->getContent(), true);
 
         $this->firstName = $data['first_name'] ?? null;

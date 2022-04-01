@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\DTO\Request\User\UserDTO;
+use App\DTO\Request\User\AbstractUserDTO;
 use App\Entity\User;
 use App\Exception\User\CreateOrUpdateUserException;
 use App\Exception\User\ParentUserLimitExceededException;
@@ -16,16 +16,24 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    public function __construct(ManagerRegistry $registry, ValidatorInterface $validator)
     {
+        $this->validator = $validator;
+
         parent::__construct($registry, User::class);
     }
 
     /**
-     * @param UserDTO $dto
+     * @param AbstractUserDTO $dto
      * @param int $appId
      * @param int|null $id
      *
@@ -35,7 +43,7 @@ class UserRepository extends ServiceEntityRepository
      * @throws ParentUserNotFoundException
      * @throws UserNotFoundException
      */
-    public function createOrUpdate(UserDTO $dto, int $appId, int $id = null): User
+    public function createOrUpdate(AbstractUserDTO $dto, int $appId, int $id = null): User
     {
         $user = null === $id ? new User() : $this->findOneBy(['id' => $id, 'appId' => $appId, 'deletedAt' => null]);
         if (null === $user) {
@@ -59,6 +67,12 @@ class UserRepository extends ServiceEntityRepository
         }
 
         try {
+            $errors = $this->validator->validate($user);
+            if (0 < $errors->count()) {
+                $error = $errors->get(0);
+                throw new Exception("{$error->getPropertyPath()} {$error->getMessage()}");
+            }
+
             $em = $this->getEntityManager();
             $em->persist($user);
             $em->flush();
